@@ -1,0 +1,53 @@
+{
+  admin off
+}
+
+# WG-Easy Web UI
+vpn.lab.local {
+  reverse_proxy wg-easy:51821
+}
+
+# Pi-hole Admin
+pihole.lab.local {
+  reverse_proxy pihole:80
+}
+
+# Dashboard
+dashboard.lab.local {
+  reverse_proxy dashboard:5173
+}
+
+# Home Assistant
+ha.lab.local {
+  reverse_proxy homeassistant:8123
+}
+
+# OpenCode
+opencode.lab.local {
+  reverse_proxy opencode:3000
+}
+
+# Portainer
+portainer.lab.local {
+  reverse_proxy portainer:9000
+}
+
+# Code Server
+code.lab.local {
+  reverse_proxy code-server:8443
+}
+
+# FileBrowser
+files.lab.local {
+  reverse_proxy filebrowser:8080
+}
+
+# Gitea
+git.lab.local {
+  reverse_proxy gitea:3000
+}
+
+# RustDesk Web
+rustdesk.lab.local {
+  reverse_proxy rustdesk:21118
+}

@@ -1,0 +1,170 @@
+services:
+
+  wg-easy:
+    image: ghcr.io/wg-easy/wg-easy:latest
+    container_name: wg-easy
+    restart: unless-stopped
+    cap_add:
+      - NET_ADMIN
+      - SYS_MODULE
+    environment:
+      - WG_HOST=${WG_HOST:-localhost}
+      - PASSWORD=${WG_PASSWORD:-changeme}
+      - WG_DEFAULT_DNS=${WG_DEFAULT_DNS:-10.8.0.2}
+    volumes:
+      - ../data/wg-easy:/etc/wireguard
+    ports:
+      - "${WG_PORT:-51820}:51820/udp"
+    sysctls:
+      - net.ipv4.ip_forward=1
+      - net.ipv4.conf.all.src_valid_mark=1
+    networks:
+      lab:
+        ipv4_address: 10.10.0.10
+
+  pihole:
+    image: pihole/pihole:latest
+    container_name: pihole
+    restart: unless-stopped
+    environment:
+      TZ: ${TZ:-America/Sao_Paulo}
+      WEBPASSWORD: ${PIHOLE_PASSWORD:-admin}
+    volumes:
+      - ../data/pihole/etc-pihole:/etc/pihole
+      - ../data/pihole/etc-dnsmasq.d:/etc/dnsmasq.d
+    ports:
+      - "${PIHOLE_DNS:-53}:53/tcp"
+      - "${PIHOLE_DNS:-53}:53/udp"
+    networks:
+      lab:
+        ipv4_address: 10.10.0.2
+
+  caddy:
+    image: caddy:latest
+    container_name: caddy
+    restart: unless-stopped
+    ports:
+      - "80:80"
+      - "443:443"
+    volumes:
+      - ./Caddyfile:/etc/caddy/Caddyfile
+      - ../data/caddy/data:/data
+      - ../data/caddy/config:/config
+    depends_on:
+      - dashboard
+      - homeassistant
+      - opencode
+      - portainer
+      - code-server
+      - filebrowser
+      - gitea
+    networks:
+      lab:
+        ipv4_address: 10.10.0.3
+
+  dashboard:
+    image: oven/bun:latest
+    container_name: dashboard
+    restart: unless-stopped
+    working_dir: /app
+    command: >
+      sh -c "
+      bun install &&
+      bun run start
+      "
+    volumes:
+      - ../apps/dashboard:/app
+    networks:
+      lab:
+        ipv4_address: 10.10.0.20
+
+  homeassistant:
+    image: homeassistant/home-assistant:stable
+    container_name: homeassistant
+    restart: unless-stopped
+    privileged: true
+    volumes:
+      - ../data/homeassistant:/config
+      - /etc/localtime:/etc/localtime:ro
+    networks:
+      lab:
+        ipv4_address: 10.10.0.21
+
+  opencode:
+    image: ghcr.io/sst/opencode:latest
+    container_name: opencode
+    restart: unless-stopped
+    volumes:
+      - ../data/opencode:/home/opencode/.config
+      - ../workspace:/workspace
+    networks:
+      lab:
+        ipv4_address: 10.10.0.22
+
+  portainer:
+    image: portainer/portainer-ce:latest
+    container_name: portainer
+    restart: unless-stopped
+    volumes:
+      - /var/run/docker.sock:/var/run/docker.sock
+      - ../data/portainer:/data
+    networks:
+      lab:
+        ipv4_address: 10.10.0.23
+
+  code-server:
+    image: lscr.io/linuxserver/code-server:latest
+    container_name: code-server
+    restart: unless-stopped
+    environment:
+      - TZ=${TZ:-America/Sao_Paulo}
+      - PASSWORD=${CODESERVER_PASSWORD:-changeme}
+    volumes:
+      - ../data/code-server:/config
+      - ../workspace:/workspace
+    networks:
+      lab:
+        ipv4_address: 10.10.0.24
+
+  filebrowser:
+    image: filebrowser/filebrowser:latest
+    container_name: filebrowser
+    restart: unless-stopped
+    volumes:
+      - ../:/srv
+      - ../data/filebrowser:/database
+    networks:
+      lab:
+        ipv4_address: 10.10.0.25
+
+  gitea:
+    image: gitea/gitea:latest
+    container_name: gitea
+    restart: unless-stopped
+    volumes:
+      - ../data/gitea:/data
+    networks:
+      lab:
+        ipv4_address: 10.10.0.26
+
+  rustdesk:
+    image: rustdesk/rustdesk-server:latest
+    container_name: rustdesk
+    restart: unless-stopped
+    ports:
+      - "21115:21115/tcp"
+      - "21116:21116/tcp"
+      - "21116:21116/udp"
+      - "21117:21117/tcp"
+      - "21118:21118/tcp"
+      - "21119:21119/tcp"
+    networks:
+      lab:
+        ipv4_address: 10.10.0.27
+
+networks:
+  lab:
+    driver: bridge
+    ipam:
+      config:
+        - subnet: 10.10.0.0/24
