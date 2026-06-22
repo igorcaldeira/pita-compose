@@ -1,0 +1,35 @@
+default_config:
+
+frontend:
+  themes: !include_dir_merge_named themes
+
+http:
+  use_x_forwarded_for: true
+  trusted_proxies:
+    - 10.10.0.0/24
+    - 172.16.0.0/12
+    - 192.168.0.0/16
+
+homeassistant:
+  name: Pitangui Composed
+  latitude: 37.7749
+  longitude: -122.4194
+  elevation: 20
+  unit_system: metric
+  time_zone: America/Sao_Paulo
+  currency: BRL
+  external_url: https://homeassistant.lab.local
+  internal_url: https://homeassistant.lab.local
+
+recorder:
+  purge_keep_days: 14
+  commit_interval: 30
+
+logger:
+  default: info
+
+mobile_app:
+
+automation: !include automations.yaml
+script: !include scripts.yaml
+scene: !include scenes.yaml

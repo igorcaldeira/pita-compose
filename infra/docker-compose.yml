@@ -99,7 +99,7 @@ services:
         ipv4_address: 10.10.0.20
 
   homeassistant:
-    image: homeassistant/home-assistant:stable
+    build: ./docker/homeassistant
     container_name: homeassistant
     labels:
       pitangui.dashboard.enabled: "true"
@@ -111,6 +111,7 @@ services:
     privileged: true
     volumes:
       - ../data/homeassistant:/config
+      - ./docker/homeassistant/config/configuration.yaml:/config/configuration.yaml
       - /etc/localtime:/etc/localtime:ro
     networks:
       lab:
@@ -118,7 +119,7 @@ services:
 
 
   portainer:
-    image: portainer/portainer-ce:latest
+    build: ./docker/portainer
     container_name: portainer
     labels:
       pitangui.dashboard.enabled: "true"
@@ -127,6 +128,8 @@ services:
       pitangui.dashboard.url: "portainer.lab.local"
       pitangui.dashboard.icon: "🐳"
     restart: unless-stopped
+    environment:
+      PORTAINER_ADMIN_PASSWORD: ${PORTAINER_ADMIN_PASSWORD}
     volumes:
       - /var/run/docker.sock:/var/run/docker.sock
       - ../data/portainer:/data
@@ -155,7 +158,7 @@ services:
         ipv4_address: 10.10.0.24
 
   filebrowser:
-    image: filebrowser/filebrowser:latest
+    build: ./docker/filebrowser
     container_name: filebrowser
     labels:
       pitangui.dashboard.enabled: "true"
@@ -164,6 +167,9 @@ services:
       pitangui.dashboard.url: "files.lab.local"
       pitangui.dashboard.icon: "📁"
     restart: unless-stopped
+    environment:
+      FB_USERNAME: admin
+      FB_PASSWORD: ${FILEBROWSER_PASSWORD}
     volumes:
       - ../:/srv
       - ../data/filebrowser:/database
@@ -175,10 +181,10 @@ services:
     image: rustdesk/rustdesk-server:latest
     container_name: rustdesk-hbbs
     labels:
-      pitangui.dashboard.enabled: "true"
+      pitangui.dashboard.enabled: "false"
       pitangui.dashboard.display: "RustDesk"
-      pitangui.dashboard.desc: "Acesso Remoto"
-      pitangui.dashboard.url: "rustdesk.lab.local"
+      pitangui.dashboard.desc: "Acesso Remoto (app)"
+      pitangui.dashboard.url: ""
       pitangui.dashboard.icon: "🖥️"
     restart: unless-stopped
     command: hbbs
