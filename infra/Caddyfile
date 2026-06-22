@@ -38,11 +38,6 @@ files.lab.local {
   reverse_proxy filebrowser:80
 }
 
-# Gitea
-git.lab.local {
-  reverse_proxy gitea:3000
-}
-
 # RustDesk Web
 rustdesk.lab.local {
   reverse_proxy rustdesk-hbbs:21118

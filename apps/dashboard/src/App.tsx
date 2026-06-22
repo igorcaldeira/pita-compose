@@ -1,14 +1,40 @@
-const services = [
-  { name: "WG-Easy", url: "//vpn.lab.local", desc: "WireGuard VPN" },
-  { name: "Pi-hole", url: "//pihole.lab.local", desc: "DNS & Ad Blocker" },
-  { name: "Home Assistant", url: "//ha.lab.local", desc: "Automação Residencial" },
-  { name: "Portainer", url: "//portainer.lab.local", desc: "Gerenciamento Docker" },
-  { name: "Code Server", url: "//code.lab.local", desc: "VS Code no Navegador" },
-  { name: "FileBrowser", url: "//files.lab.local", desc: "Gerenciador de Arquivos" },
-  { name: "RustDesk", url: "//rustdesk.lab.local", desc: "Acesso Remoto" },
-];
+import { useState, useEffect } from "react";
+
+type Service = {
+  name: string;
+  url: string;
+  desc: string;
+  icon: string;
+};
 
 function App() {
+  const [services, setServices] = useState<Service[]>([]);
+  const [loading, setLoading] = useState(true);
+
+  useEffect(() => {
+    fetch("/api/services")
+      .then((r) => r.json())
+      .then((data) => setServices(data.services))
+      .catch(console.error)
+      .finally(() => setLoading(false));
+  }, []);
+
+  if (loading) {
+    return (
+      <div
+        style={{
+          minHeight: "100vh",
+          display: "flex",
+          alignItems: "center",
+          justifyContent: "center",
+          color: "var(--text-muted)",
+        }}
+      >
+        Carregando...
+      </div>
+    );
+  }
+
   return (
     <div
       style={{
@@ -61,6 +87,7 @@ function App() {
               e.currentTarget.style.transform = "none";
             }}
           >
+            <div style={{ fontSize: "2rem", marginBottom: "0.5rem" }}>{svc.icon}</div>
             <h2 style={{ fontSize: "1.25rem", fontWeight: 600, marginBottom: "0.25rem" }}>
               {svc.name}
             </h2>

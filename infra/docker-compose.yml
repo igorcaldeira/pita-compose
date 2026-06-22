@@ -3,6 +3,12 @@ services:
   wg-easy:
     image: ghcr.io/wg-easy/wg-easy:latest
     container_name: wg-easy
+    labels:
+      pitangui.dashboard.enabled: "true"
+      pitangui.dashboard.display: "WG-Easy"
+      pitangui.dashboard.desc: "WireGuard VPN"
+      pitangui.dashboard.url: "vpn.lab.local"
+      pitangui.dashboard.icon: "🔒"
     restart: unless-stopped
     cap_add:
       - NET_ADMIN
@@ -27,6 +33,12 @@ services:
   pihole:
     image: pihole/pihole:latest
     container_name: pihole
+    labels:
+      pitangui.dashboard.enabled: "true"
+      pitangui.dashboard.display: "Pi-hole"
+      pitangui.dashboard.desc: "DNS & Ad Blocker"
+      pitangui.dashboard.url: "pihole.lab.local/admin/"
+      pitangui.dashboard.icon: "🛡️"
     restart: unless-stopped
     environment:
       TZ: ${TZ:-America/Sao_Paulo}
@@ -45,6 +57,8 @@ services:
   caddy:
     image: caddy:latest
     container_name: caddy
+    labels:
+      pitangui.dashboard.enabled: "false"
     restart: unless-stopped
     ports:
       - "80:80"
@@ -59,7 +73,6 @@ services:
       - portainer
       - code-server
       - filebrowser
-      - gitea
     networks:
       lab:
         ipv4_address: 10.10.0.3
@@ -67,6 +80,8 @@ services:
   dashboard:
     image: oven/bun:latest
     container_name: dashboard
+    labels:
+      pitangui.dashboard.enabled: "false"
     restart: unless-stopped
     working_dir: /app
     command: >
@@ -78,6 +93,7 @@ services:
       - "${DASHBOARD_PORT:-5173}:5173"
     volumes:
       - ../apps/dashboard:/app
+      - ./docker-compose.yml:/infra/docker-compose.yml:ro
     networks:
       lab:
         ipv4_address: 10.10.0.20
@@ -85,6 +101,12 @@ services:
   homeassistant:
     image: homeassistant/home-assistant:stable
     container_name: homeassistant
+    labels:
+      pitangui.dashboard.enabled: "true"
+      pitangui.dashboard.display: "Home Assistant"
+      pitangui.dashboard.desc: "Automação Residencial"
+      pitangui.dashboard.url: "ha.lab.local"
+      pitangui.dashboard.icon: "🏠"
     restart: unless-stopped
     privileged: true
     volumes:
@@ -98,6 +120,12 @@ services:
   portainer:
     image: portainer/portainer-ce:latest
     container_name: portainer
+    labels:
+      pitangui.dashboard.enabled: "true"
+      pitangui.dashboard.display: "Portainer"
+      pitangui.dashboard.desc: "Gerenciamento Docker"
+      pitangui.dashboard.url: "portainer.lab.local"
+      pitangui.dashboard.icon: "🐳"
     restart: unless-stopped
     volumes:
       - /var/run/docker.sock:/var/run/docker.sock
@@ -109,6 +137,12 @@ services:
   code-server:
     image: lscr.io/linuxserver/code-server:latest
     container_name: code-server
+    labels:
+      pitangui.dashboard.enabled: "true"
+      pitangui.dashboard.display: "Code Server"
+      pitangui.dashboard.desc: "VS Code no Navegador"
+      pitangui.dashboard.url: "code.lab.local"
+      pitangui.dashboard.icon: "💻"
     restart: unless-stopped
     environment:
       - TZ=${TZ:-America/Sao_Paulo}
@@ -123,6 +157,12 @@ services:
   filebrowser:
     image: filebrowser/filebrowser:latest
     container_name: filebrowser
+    labels:
+      pitangui.dashboard.enabled: "true"
+      pitangui.dashboard.display: "FileBrowser"
+      pitangui.dashboard.desc: "Gerenciador de Arquivos"
+      pitangui.dashboard.url: "files.lab.local"
+      pitangui.dashboard.icon: "📁"
     restart: unless-stopped
     volumes:
       - ../:/srv
@@ -131,19 +171,15 @@ services:
       lab:
         ipv4_address: 10.10.0.25
 
-  gitea:
-    image: gitea/gitea:latest
-    container_name: gitea
-    restart: unless-stopped
-    volumes:
-      - ../data/gitea:/data
-    networks:
-      lab:
-        ipv4_address: 10.10.0.26
-
   rustdesk-hbbs:
     image: rustdesk/rustdesk-server:latest
     container_name: rustdesk-hbbs
+    labels:
+      pitangui.dashboard.enabled: "true"
+      pitangui.dashboard.display: "RustDesk"
+      pitangui.dashboard.desc: "Acesso Remoto"
+      pitangui.dashboard.url: "rustdesk.lab.local"
+      pitangui.dashboard.icon: "🖥️"
     restart: unless-stopped
     command: hbbs
     volumes:
@@ -160,6 +196,8 @@ services:
   rustdesk-hbbr:
     image: rustdesk/rustdesk-server:latest
     container_name: rustdesk-hbbr
+    labels:
+      pitangui.dashboard.enabled: "false"
     restart: unless-stopped
     command: hbbr
     volumes:
