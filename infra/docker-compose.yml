@@ -53,7 +53,6 @@ services:
     depends_on:
       - dashboard
       - homeassistant
-      - opencode
       - portainer
       - code-server
       - filebrowser
@@ -90,16 +89,6 @@ services:
       lab:
         ipv4_address: 10.10.0.21
 
-  opencode:
-    image: ghcr.io/sst/opencode:latest
-    container_name: opencode
-    restart: unless-stopped
-    volumes:
-      - ../data/opencode:/home/opencode/.config
-      - ../workspace:/workspace
-    networks:
-      lab:
-        ipv4_address: 10.10.0.22
 
   portainer:
     image: portainer/portainer-ce:latest
@@ -147,20 +136,35 @@ services:
       lab:
         ipv4_address: 10.10.0.26
 
-  rustdesk:
+  rustdesk-hbbs:
     image: rustdesk/rustdesk-server:latest
-    container_name: rustdesk
+    container_name: rustdesk-hbbs
     restart: unless-stopped
+    command: hbbs
+    volumes:
+      - ../data/rustdesk:/root
     ports:
       - "21115:21115/tcp"
       - "21116:21116/tcp"
       - "21116:21116/udp"
-      - "21117:21117/tcp"
       - "21118:21118/tcp"
-      - "21119:21119/tcp"
     networks:
       lab:
         ipv4_address: 10.10.0.27
+
+  rustdesk-hbbr:
+    image: rustdesk/rustdesk-server:latest
+    container_name: rustdesk-hbbr
+    restart: unless-stopped
+    command: hbbr
+    volumes:
+      - ../data/rustdesk:/root
+    ports:
+      - "21117:21117/tcp"
+      - "21119:21119/tcp"
+    networks:
+      lab:
+        ipv4_address: 10.10.0.28
 
 networks:
   lab:

@@ -22,10 +22,6 @@ ha.lab.local {
   reverse_proxy homeassistant:8123
 }
 
-# OpenCode
-opencode.lab.local {
-  reverse_proxy opencode:3000
-}
 
 # Portainer
 portainer.lab.local {
@@ -49,5 +45,5 @@ git.lab.local {
 
 # RustDesk Web
 rustdesk.lab.local {
-  reverse_proxy rustdesk:21118
+  reverse_proxy rustdesk-hbbs:21118
 }
