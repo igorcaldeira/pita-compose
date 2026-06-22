@@ -9,12 +9,14 @@ services:
       - SYS_MODULE
     environment:
       - WG_HOST=${WG_HOST:-localhost}
-      - PASSWORD=${WG_PASSWORD:-changeme}
-      - WG_DEFAULT_DNS=${WG_DEFAULT_DNS:-10.8.0.2}
+      - PASSWORD_HASH=${WG_PASSWORD_HASH}
+      - WG_DEFAULT_DNS=${WG_DEFAULT_DNS:-10.10.0.2}
+      - WG_ALLOWED_IPS=${WG_ALLOWED_IPS:-10.10.0.0/24}
     volumes:
       - ../data/wg-easy:/etc/wireguard
     ports:
       - "${WG_PORT:-51820}:51820/udp"
+      - "${WG_UI_PORT:-51821}:51821/tcp"
     sysctls:
       - net.ipv4.ip_forward=1
       - net.ipv4.conf.all.src_valid_mark=1
@@ -28,13 +30,14 @@ services:
     restart: unless-stopped
     environment:
       TZ: ${TZ:-America/Sao_Paulo}
-      WEBPASSWORD: ${PIHOLE_PASSWORD:-admin}
+      FTLCONF_webserver_api_password: ${PIHOLE_PASSWORD:-admin}
     volumes:
       - ../data/pihole/etc-pihole:/etc/pihole
       - ../data/pihole/etc-dnsmasq.d:/etc/dnsmasq.d
     ports:
       - "${PIHOLE_DNS:-53}:53/tcp"
       - "${PIHOLE_DNS:-53}:53/udp"
+      - "${PIHOLE_UI_PORT:-8080}:80/tcp"
     networks:
       lab:
         ipv4_address: 10.10.0.2
@@ -71,6 +74,8 @@ services:
       bun install &&
       bun run start
       "
+    ports:
+      - "${DASHBOARD_PORT:-5173}:5173"
     volumes:
       - ../apps/dashboard:/app
     networks:

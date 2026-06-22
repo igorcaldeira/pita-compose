@@ -35,7 +35,7 @@ code.lab.local {
 
 # FileBrowser
 files.lab.local {
-  reverse_proxy filebrowser:8080
+  reverse_proxy filebrowser:80
 }
 
 # Gitea

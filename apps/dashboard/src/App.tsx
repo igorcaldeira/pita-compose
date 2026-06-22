@@ -2,11 +2,9 @@ const services = [
   { name: "WG-Easy", url: "//vpn.lab.local", desc: "WireGuard VPN" },
   { name: "Pi-hole", url: "//pihole.lab.local", desc: "DNS & Ad Blocker" },
   { name: "Home Assistant", url: "//ha.lab.local", desc: "Automação Residencial" },
-  { name: "OpenCode", url: "//opencode.lab.local", desc: "Agente de Código AI" },
   { name: "Portainer", url: "//portainer.lab.local", desc: "Gerenciamento Docker" },
   { name: "Code Server", url: "//code.lab.local", desc: "VS Code no Navegador" },
   { name: "FileBrowser", url: "//files.lab.local", desc: "Gerenciador de Arquivos" },
-  { name: "Gitea", url: "//git.lab.local", desc: "Git Self-Hosted" },
   { name: "RustDesk", url: "//rustdesk.lab.local", desc: "Acesso Remoto" },
 ];
 
@@ -24,10 +22,10 @@ function App() {
     >
       <header style={{ textAlign: "center", marginBottom: "3rem" }}>
         <h1 style={{ fontSize: "2.5rem", fontWeight: 700, letterSpacing: "-0.02em" }}>
-          Painel de Controle
+          Pita
         </h1>
         <p style={{ color: "var(--text-muted)", marginTop: "0.5rem", fontSize: "1.1rem" }}>
-          Servidor Lab
+          Painel de Controle
         </p>
       </header>
 
