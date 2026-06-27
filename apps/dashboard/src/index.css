@@ -31,3 +31,12 @@ a {
   color: inherit;
   text-decoration: none;
 }
+
+input:focus {
+  border-color: var(--accent) !important;
+  box-shadow: 0 0 0 2px rgba(56, 189, 248, 0.15);
+}
+
+pre {
+  font-family: "SF Mono", "Fira Code", monospace;
+}

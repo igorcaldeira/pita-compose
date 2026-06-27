@@ -3,39 +3,37 @@
 }
 
 # WG-Easy Web UI
-vpn.lab.local {
+http://vpn.lab.local {
   reverse_proxy wg-easy:51821
 }
 
 # Pi-hole Admin
-pihole.lab.local {
+http://pihole.lab.local {
   reverse_proxy pihole:80
 }
 
 # Dashboard
-dashboard.lab.local {
+http://dashboard.lab.local {
   reverse_proxy dashboard:5173
 }
 
 # Home Assistant
-ha.lab.local {
+http://ha.lab.local {
   reverse_proxy homeassistant:8123
 }
 
 
 # Portainer
-portainer.lab.local {
+http://portainer.lab.local {
   reverse_proxy portainer:9000
 }
 
 # Code Server
-code.lab.local {
+http://code.lab.local {
   reverse_proxy code-server:8443
 }
 
 # FileBrowser
-files.lab.local {
+http://files.lab.local {
   reverse_proxy filebrowser:80
 }
-
-
