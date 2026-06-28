@@ -50,6 +50,29 @@ Then create your VPN client in the WG-Easy UI at `http://10.0.0.100:51821`
 > those into a client config at creation time. **Delete and re-create the client**, then
 > re-scan the QR — editing files won't update an already-issued config on the phone.
 
+## Remote desktop (RustDesk)
+
+`rustdesk-hbbs` (ID/rendezvous) and `rustdesk-hbbr` (relay) run in the stack and
+broker connections between RustDesk **clients** — the server itself doesn't share a
+screen. To control this host, run the client on it pointed at our own server.
+
+```bash
+infra/scripts/setup-rustdesk-client.sh
+```
+
+The script installs the client (brew), writes `RustDesk2.toml` (custom server =
+`WG_HOST`, key = `data/rustdesk/id_ed25519.pub`, LAN direct-IP access on), sets a
+permanent password (`RUSTDESK_PASSWORD` in `.env`, else prompts), starts it at login
+via a LaunchAgent, and prints this machine's RustDesk ID.
+
+> **Manual step (macOS won't let scripts do it):** System Settings → Privacy &
+> Security → enable RustDesk under **Screen & System Audio Recording** *and*
+> **Accessibility**, then relaunch RustDesk.
+
+**From the laptop (same LAN):** install RustDesk, set the same ID/Relay Server
+(`WG_HOST`) and Key under Settings → Network, then connect by ID + password — or,
+since direct IP access is on, just type the host's IP.
+
 ## Networking notes
 
 - **Split tunnel:** only `10.10.0.0/24` routes through the VPN; normal internet uses the

@@ -255,7 +255,10 @@ services:
       pitangui.dashboard.icon: "🖥️"
     restart: unless-stopped
     logging: *default-logging
-    command: hbbs
+    # -r tells hbbs which relay (hbbr) to hand to clients when direct P2P fails.
+    # Without it a session that can't punch through has no fallback and "can't
+    # reach". Must be an address clients can reach: this host's LAN IP : 21117.
+    command: hbbs -r ${WG_HOST}:21117
     volumes:
       - ../data/rustdesk:/root
     ports:

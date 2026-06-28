@@ -17,6 +17,10 @@ PW_FILE=/tmp/portainer_password
 printf '%s' "$PORTAINER_ADMIN_PASSWORD" > "$PW_FILE"   # no trailing newline
 chmod 600 "$PW_FILE"
 
-# On a fresh database this creates the 'admin' user with the password above.
-# Once an admin exists, Portainer keeps it and ignores this flag.
-exec /portainer --admin-password-file "$PW_FILE"
+# On a fresh database this creates the 'admin' user with the password above
+# (once an admin exists, Portainer keeps it and ignores the flag), and -H
+# auto-connects the local Docker socket as the default environment so the
+# post-login "connect an environment" wizard is skipped entirely.
+exec /portainer \
+  --admin-password-file "$PW_FILE" \
+  -H unix:///var/run/docker.sock
