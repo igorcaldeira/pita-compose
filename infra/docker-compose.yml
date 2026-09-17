@@ -303,6 +303,7 @@ services:
         ipv4_address: 10.10.0.28
 
   valheim:
+    platform: linux/amd64
     image: indifferentbroccoli/valheim-server-docker
     container_name: valheim
     restart: unless-stopped
