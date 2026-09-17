@@ -60,6 +60,21 @@ services:
       lab:
         ipv4_address: 10.10.0.10
 
+  duckdns:
+    image: lscr.io/linuxserver/duckdns@sha256:424dbc5a5db5388ad4c197882eac475c5bfad2be1e02a761692946d406591b17  # d67e71cc-ls82
+    container_name: duckdns
+    restart: unless-stopped
+    logging: *default-logging
+    environment:
+      - TZ=${TZ:-America/Sao_Paulo}
+      - SUBDOMAINS=${DUCKDNS_SUBDOMAIN}
+      - TOKEN=${DUCKDNS_TOKEN}
+      - UPDATE_IP=ipv4
+      - LOG_FILE=false
+    networks:
+      lab:
+        ipv4_address: 10.10.0.30
+
   pihole:
     image: pihole/pihole@sha256:8ea95136e7c8c15b42d88eadf1a3875421aa1be30ad39e50f661188cc986fb27  # 2026.06.0
     container_name: pihole
@@ -287,9 +302,32 @@ services:
       lab:
         ipv4_address: 10.10.0.28
 
+  valheim:
+    image: indifferentbroccoli/valheim-server-docker
+    container_name: valheim
+    restart: unless-stopped
+    logging: *default-logging
+    ports:
+      - "${VALHEIM_PORT:-2456}:2456/udp"
+      - "2457:2457/udp"
+    env_file:
+      - ../data/valheim/.env
+    volumes:
+      - ../data/valheim/server-files:/valheim
+      - ../data/valheim/server-data:/valheim-saves
+    networks:
+      valheim:
+        ipv4_address: 10.20.0.10
+
+
 networks:
   lab:
     driver: bridge
     ipam:
       config:
         - subnet: 10.10.0.0/24
+  valheim:
+    driver: bridge
+    ipam:
+      config:
+        - subnet: 10.20.0.0/24
